@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Data
 @Entity
 @Table(name = "volunteer_sessions")
@@ -15,6 +17,7 @@ public class VolunteerSession {
 
     @ManyToOne
     @JoinColumn(name = "garden_id")
+    @JsonBackReference
     private Garden garden;
 
     private LocalDateTime datetime;

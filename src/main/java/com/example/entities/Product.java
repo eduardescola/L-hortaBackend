@@ -1,5 +1,7 @@
 package com.example.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,5 +22,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "garden_id")
+    @JsonManagedReference
     private Garden garden;
 }
