@@ -1,34 +1,32 @@
 package com.example.services;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.example.entities.Garden;
+import com.example.repositories.GardenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.entities.Garden;
-import com.example.repositories.GardenRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GardenService {
 
     @Autowired
-    private GardenRepository huertoRepository;
+    private GardenRepository gardenRepository;
 
-    public List<Garden> obtenerTodos() {
-        return huertoRepository.findAll();
+    public List<Garden> findAll() {
+        return gardenRepository.findAll();
     }
 
-    public Garden crear(Garden huerto) {
-        return huertoRepository.save(huerto);
+    public Optional<Garden> findById(Long id) {
+        return gardenRepository.findById(id);
     }
 
-    public Optional<Garden> obtenerPorId(Long id) {
-        return huertoRepository.findById(id);
+    public Garden save(Garden garden) {
+        return gardenRepository.save(garden);
     }
 
-    public void eliminar(Long id) {
-        huertoRepository.deleteById(id);
+    public void delete(Long id) {
+        gardenRepository.deleteById(id);
     }
 }
-
