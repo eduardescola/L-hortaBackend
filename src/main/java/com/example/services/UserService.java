@@ -24,8 +24,8 @@ public class UserService {
     }
 
     public User crear(User user) {
-        //String passwordCifrada = passwordEncoder.encode(user.getPassword());
-        //user.setPassword(passwordCifrada);
+        String passwordCifrada = passwordEncoder.encode(user.getPassword());
+        user.setPassword(passwordCifrada);
         return userRepository.save(user);
     }
 
