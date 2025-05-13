@@ -13,22 +13,22 @@ import com.example.repositories.GardenRepository;
 public class GardenService {
 
     @Autowired
-    private GardenRepository huertoRepository;
+    private GardenRepository gardenRepository;
 
-    public List<Garden> obtenerTodos() {
-        return huertoRepository.findAll();
+    public List<Garden> getAll() {
+        return gardenRepository.findAll();
     }
 
-    public Garden crear(Garden huerto) {
-        return huertoRepository.save(huerto);
+    public Garden create(Garden garden) {
+        return gardenRepository.save(garden);
     }
 
-    public Optional<Garden> obtenerPorId(Long id) {
-        return huertoRepository.findById(id);
+    public Optional<Garden> getById(Long id) {
+        return gardenRepository.findById(id);
     }
 
-    public void eliminar(Long id) {
-        huertoRepository.deleteById(id);
+    public void delete(Long id) {
+        gardenRepository.deleteById(id);
     }
 }
 
