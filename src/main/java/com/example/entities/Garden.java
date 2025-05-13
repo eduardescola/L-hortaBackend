@@ -11,17 +11,19 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "huertos")
-public class Huerto {
+@Table(name = "gardens")
+public class Garden {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
-    private String ubicacion;
+    private String name;
+    private String description;
+    private String image;
+    private String location;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @JoinColumn(name = "user_id")
+    private User user;
 }
 
