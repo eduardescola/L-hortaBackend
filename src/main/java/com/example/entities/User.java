@@ -13,17 +13,17 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "usuarios")
-public class Usuario {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
-    private String email;
-    private String contraseña;
+    private String name;
+    private String surname;
+    private String password;
+    private String role;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Huerto> huertos;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Garden> gardens;
 }
-

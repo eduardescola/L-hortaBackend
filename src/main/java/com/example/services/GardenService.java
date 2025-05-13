@@ -6,24 +6,24 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.entities.Huerto;
-import com.example.repositories.HuertoRepository;
+import com.example.entities.Garden;
+import com.example.repositories.GardenRepository;
 
 @Service
-public class HuertoService {
+public class GardenService {
 
     @Autowired
-    private HuertoRepository huertoRepository;
+    private GardenRepository huertoRepository;
 
-    public List<Huerto> obtenerTodos() {
+    public List<Garden> obtenerTodos() {
         return huertoRepository.findAll();
     }
 
-    public Huerto crear(Huerto huerto) {
+    public Garden crear(Garden huerto) {
         return huertoRepository.save(huerto);
     }
 
-    public Optional<Huerto> obtenerPorId(Long id) {
+    public Optional<Garden> obtenerPorId(Long id) {
         return huertoRepository.findById(id);
     }
 

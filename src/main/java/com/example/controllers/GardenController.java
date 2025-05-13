@@ -12,36 +12,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.entities.Usuario;
-import com.example.services.UsuarioService;
+import com.example.entities.Garden;
+import com.example.services.GardenService;
 
 @RestController
-@RequestMapping("/usuarios")
-public class UsuarioController {
+@RequestMapping("/huertos")
+public class GardenController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private GardenService huertoService;
 
     @GetMapping
-    public List<Usuario> listar() {
-        return usuarioService.obtenerTodos();
+    public List<Garden> listar() {
+        return huertoService.obtenerTodos();
     }
 
     @PostMapping
-    public Usuario crear(@RequestBody Usuario usuario) {
-        return usuarioService.crear(usuario);
+    public Garden crear(@RequestBody Garden huerto) {
+        return huertoService.crear(huerto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> obtenerPorId(@PathVariable Long id) {
-        return usuarioService.obtenerPorId(id)
+    public ResponseEntity<Garden> obtenerPorId(@PathVariable Long id) {
+        return huertoService.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        usuarioService.eliminar(id);
+        huertoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
 }
