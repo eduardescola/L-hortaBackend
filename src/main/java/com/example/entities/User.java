@@ -24,7 +24,8 @@ public class User {
 
     private String name;
     private String surname;
-    private String email; // <-- Nuevo campo agregado
+    private String email; // Campo email agregado
+    private String location; // <-- Nuevo campo de ubicación
 
     @JsonIgnore
     private String password;
