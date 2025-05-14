@@ -24,6 +24,8 @@ public class User {
 
     private String name;
     private String surname;
+    private String email; // <-- Nuevo campo agregado
+
     @JsonIgnore
     private String password;
     private String role;
@@ -31,5 +33,4 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Garden> gardens;
-
 }
