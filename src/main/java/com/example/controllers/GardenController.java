@@ -37,4 +37,22 @@ public class GardenController {
         gardenService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    // 🔍 Buscar jardines por nombre exacto
+    @GetMapping("/name/{name}")
+    public List<Garden> findByName(@PathVariable String name) {
+        return gardenService.findByName(name);
+    }
+
+    // 🔍 Buscar jardines por producto
+    @GetMapping("/products/{product}")
+    public List<Garden> findByProduct(@PathVariable String product) {
+        return gardenService.findByProduct(product);
+    }
+
+    // 🔍 Buscar jardines por ubicación del dueño
+    @GetMapping("/location/{location}")
+    public List<Garden> findByLocation(@PathVariable String location) {
+        return gardenService.findByLocation(location);
+    }
 }

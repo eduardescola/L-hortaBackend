@@ -1,12 +1,13 @@
 package com.example.services;
 
-import com.example.entities.Garden;
-import com.example.repositories.GardenRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.entities.Garden;
+import com.example.repositories.GardenRepository;
 
 @Service
 public class GardenService {
@@ -28,5 +29,19 @@ public class GardenService {
 
     public void delete(Long id) {
         gardenRepository.deleteById(id);
+    }
+
+    // 🔍 Buscar por nombre exacto del jardín
+    public List<Garden> findByName(String name) {
+        return gardenRepository.findByName(name);
+    }
+
+    public List<Garden> findByProduct(String product) {
+        return gardenRepository.findByProduct(product);
+    }
+
+    // 🔍 Buscar por ubicación del usuario propietario
+    public List<Garden> findByLocation(String location) {
+        return gardenRepository.findByLocation(location);
     }
 }
