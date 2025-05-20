@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.entities.User;
 import com.example.repositories.UserRepository;
+import com.example.security.JwtUtil;
 
 @RestController
 @RequestMapping
-@CrossOrigin(origins = "http://localhost:5173") // Permitir CORS desde frontend
+@CrossOrigin(origins = "http://localhost:5173") // Ajusta según tu frontend
 public class AuthController {
 
     @Autowired
@@ -19,6 +20,9 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // Login DTO
     static class LoginRequest {
@@ -32,36 +36,37 @@ public class AuthController {
         public String surname;
         public String email;
         public String password;
+        public String location;
     }
 
-    // Response DTO
-    static class LoginResponse {
-        public String message;
+    // ✅ Token Response
+    static class TokenResponse {
+        public String token;
 
-        public LoginResponse(String message) {
-            this.message = message;
+        public TokenResponse(String token) {
+            this.token = token;
         }
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public TokenResponse login(@RequestBody LoginRequest request) {
         Optional<User> userOpt = userRepository.findByEmail(request.email);
         if (userOpt.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
         User user = userOpt.get();
-        boolean matches = passwordEncoder.matches(request.password, user.getPassword());
 
-        if (!matches) {
+        if (!passwordEncoder.matches(request.password, user.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        return new LoginResponse("Login correcto");
+        String token = jwtUtil.generateToken(user);
+        return new TokenResponse(token);
     }
 
     @PostMapping("/register")
-    public LoginResponse register(@RequestBody RegisterRequest request) {
+    public TokenResponse register(@RequestBody RegisterRequest request) {
         Optional<User> userOpt = userRepository.findByEmail(request.email);
         if (userOpt.isPresent()) {
             throw new RuntimeException("El usuario ya existe");
@@ -72,10 +77,12 @@ public class AuthController {
         newUser.setSurname(request.surname);
         newUser.setEmail(request.email);
         newUser.setPassword(passwordEncoder.encode(request.password));
-        newUser.setRole("USER"); // Por defecto
+        newUser.setLocation(request.location);
+        newUser.setRole("USER");
 
         userRepository.save(newUser);
 
-        return new LoginResponse("Usuario registrado con éxito");
+        String token = jwtUtil.generateToken(newUser);
+        return new TokenResponse(token);
     }
 }
