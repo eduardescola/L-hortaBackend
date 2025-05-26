@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
@@ -37,4 +37,11 @@ public class UserController {
         userService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    //@PatchMapping("/{id}")
+//    public ResponseEntity<?> updateProfile(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+//        userService.updateProfile(id, updates);
+//        return ResponseEntity.ok("Perfil actualitzat");
+//    }
+
 }

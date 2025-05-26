@@ -1,5 +1,7 @@
 package com.example.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,4 +29,17 @@ public class VolunteerSession {
 
     @Column(name = "task_description")
     private String taskDescription;
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VolunteerInscription> inscriptions;
+
+    @Transient
+    public int getInscriptions() {
+        return maxVolunteers;
+    }
+
+    @Transient
+    public int getAvailableSpots() {
+        return maxVolunteers - inscriptions.size();
+    }
 }

@@ -5,15 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -37,4 +29,18 @@ public class Garden {
     @OneToMany(mappedBy = "garden", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Product> products;
+
+    @OneToMany(mappedBy = "garden", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<VolunteerSession> sessions;
+
+    @Transient
+    public boolean isProductAvailable() {
+        return products != null && !products.isEmpty();
+    }
+
+    @Transient
+    public boolean isSessionAvailable() {
+        return sessions != null && !sessions.isEmpty();
+    }
 }

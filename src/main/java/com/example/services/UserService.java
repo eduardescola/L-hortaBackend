@@ -36,4 +36,8 @@ public class UserService {
     public void eliminar(Long id) {
         userRepository.deleteById(id);
     }
+
+    public void updateProfile(){
+
+    }
 }
