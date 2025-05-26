@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class ProductService {
 
@@ -28,5 +31,13 @@ public class ProductService {
 
     public void delete(Long id) {
         productRepository.deleteById(id);
+    }
+    
+    public Page<Product> findAllPaged(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public Page<Product> findByGardenIdPaged(Long gardenId, Pageable pageable) {
+        return productRepository.findByGardenId(gardenId, pageable);
     }
 }

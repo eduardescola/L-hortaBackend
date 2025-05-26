@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import com.example.entities.Garden;
 import com.example.repositories.GardenRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
 @Service
 public class GardenService {
 
@@ -43,5 +47,9 @@ public class GardenService {
     // 🔍 Buscar por ubicación del usuario propietario
     public List<Garden> findByLocation(String location) {
         return gardenRepository.findByLocation(location);
+    }
+    
+    public Page<Garden> findAllPaged(Pageable pageable) {
+        return gardenRepository.findAll(pageable);
     }
 }
