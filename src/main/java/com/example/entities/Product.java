@@ -27,6 +27,8 @@ public class Product {
 
     private int stock;
 
+    private String units;
+
     @ManyToOne
     @JoinColumn(name = "garden_id")
     @JsonBackReference

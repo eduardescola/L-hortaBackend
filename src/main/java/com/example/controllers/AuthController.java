@@ -11,8 +11,8 @@ import com.example.repositories.UserRepository;
 import com.example.security.JwtUtil;
 
 @RestController
-@RequestMapping
-@CrossOrigin(origins = "http://localhost:5173") // Ajusta según tu frontend
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
     @Autowired
@@ -39,12 +39,14 @@ public class AuthController {
         public String location;
     }
 
-    // ✅ Token Response
+    // Token Response
     static class TokenResponse {
         public String token;
+        public Long id;
 
-        public TokenResponse(String token) {
+        public TokenResponse(String token, Long id) {
             this.token = token;
+            this.id = id;
         }
     }
 
@@ -62,16 +64,17 @@ public class AuthController {
         }
 
         String token = jwtUtil.generateToken(user);
-        return new TokenResponse(token);
+        return new TokenResponse(token, user.getId());
     }
 
     @PostMapping("/register")
     public TokenResponse register(@RequestBody RegisterRequest request) {
-        Optional<User> userOpt = userRepository.findByEmail(request.email);
-        if (userOpt.isPresent()) {
-            throw new RuntimeException("El usuario ya existe");
+        // Check if user already exists
+        if (userRepository.findByEmail(request.email).isPresent()) {
+            throw new RuntimeException("El email ya está registrado");
         }
 
+        // Create new user
         User newUser = new User();
         newUser.setName(request.name);
         newUser.setSurname(request.surname);
@@ -83,6 +86,6 @@ public class AuthController {
         userRepository.save(newUser);
 
         String token = jwtUtil.generateToken(newUser);
-        return new TokenResponse(token);
+        return new TokenResponse(token, newUser.getId());
     }
 }
