@@ -1,16 +1,13 @@
 package com.example.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -20,17 +17,31 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(name="ca_name", length=100, nullable = false)
+    private String caName;
 
-    @Column(name = "unit_price")
-    private Double unitPrice;
+    @Column(name="es_name", length=100, nullable = false)
+    private String esName;
 
-    private int stock;
+    @Column(name="en_name", length=100, nullable = false)
+    private String enName;
 
-    private String units;
+    @Column(name="fr_name", length=100, nullable = false)
+    private String frName;
 
     @ManyToOne
     @JoinColumn(name = "garden_id")
-    @JsonBackReference
+//    @JsonBackReference("garden-products")
+    @JsonIgnore
     private Garden garden;
+
+    @OneToMany(mappedBy = "product")
+    //@JsonManagedReference
+    @JsonIgnore
+    private List<GardenProduct> gardenProduct;
+
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<OrderItem> orderItems;
+
 }

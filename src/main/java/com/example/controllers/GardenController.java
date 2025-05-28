@@ -1,5 +1,8 @@
 package com.example.controllers;
 
+import com.example.dto.GardenDetailDTO;
+import com.example.dto.GardenListDTO;
+import com.example.dto.GardenProductDTO;
 import com.example.entities.Garden;
 import com.example.entities.User;
 import com.example.services.GardenService;
@@ -8,11 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.MediaType;
+import com.example.mappers.GardenMapper;
+
 import java.io.IOException;
 import org.springframework.security.core.Authentication;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/gardens")
@@ -24,14 +30,17 @@ public class GardenController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GardenMapper gardenMapper;
+
     @GetMapping
-    public List<Garden> list() {
-        return gardenService.findAll();
+    public List<GardenListDTO> list() {
+        return gardenService.getAllGardensForList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Garden> get(@PathVariable Long id) {
-        return gardenService.findById(id)
+    public ResponseEntity<GardenDetailDTO> get(@PathVariable Long id) {
+        return gardenService.getGardenDetail(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -41,16 +50,19 @@ public class GardenController {
             @RequestParam("name") String name,
             @RequestParam("description") String description,
             @RequestParam("location") String location,
+            @RequestParam("postalCode") String postalCode,
             @RequestParam("products") String productsJson,
             @RequestParam(value = "image", required = false) MultipartFile image,
             Authentication authentication) {
+        System.out.println("HOli");
         try {
             String userEmail = authentication.getName();
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new RuntimeException("User not found"));
+            System.out.println(user.getId());
 
             Garden garden = gardenService.createGarden(
-                    name, description, location, user.getId(), productsJson,
+                    name, description, location, postalCode, user.getId(), productsJson,
                     image
             );
             return ResponseEntity.ok(garden);
@@ -63,7 +75,7 @@ public class GardenController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        gardenService.delete(id);
+        gardenService.deleteGarden(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -84,4 +96,18 @@ public class GardenController {
     public List<Garden> findByLocation(@PathVariable String location) {
         return gardenService.findByLocation(location);
     }
+
+    @GetMapping("/{gardenId}/products")
+    public List<GardenProductDTO> getGardenProducts(@PathVariable Long gardenId) {
+        return gardenService.getGardenProducts(gardenId);
+    }
+
+    @GetMapping("/my-gardens")
+    public List<GardenDetailDTO> getMyGardens(Authentication authentication) {
+        String userEmail = authentication.getName();
+        return userRepository.findByEmail(userEmail)
+                .map(user -> gardenService.getGardensForListByUserId(user.getId()))
+                .orElse(Collections.emptyList());
+    }
+
 }

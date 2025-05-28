@@ -17,24 +17,24 @@ public class ProductController {
 
     @GetMapping
     public List<Product> list() {
-        return productService.findAll();
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> get(@PathVariable Long id) {
-        return productService.findById(id)
+        return productService.getProductById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public Product create(@RequestBody Product product) {
-        return productService.save(product);
+        return productService.createProduct(product);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.delete(id);
+        productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 }

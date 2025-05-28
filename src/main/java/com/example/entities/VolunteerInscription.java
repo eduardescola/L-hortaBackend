@@ -3,6 +3,7 @@ package com.example.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -14,11 +15,19 @@ public class VolunteerInscription {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference("inscription-user")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "session_id")
-    @JsonBackReference
+    @JsonBackReference("session-inscriptions")
     private VolunteerSession session;
+
+    @Column(name = "inscription_datetime", nullable = false, updatable = false)
+    private LocalDateTime inscriptionDatetime;
+
+    @PrePersist
+    protected void onCreate() {
+        inscriptionDatetime = LocalDateTime.now();
+    }
 }

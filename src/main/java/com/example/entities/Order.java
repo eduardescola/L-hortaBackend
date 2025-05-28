@@ -17,20 +17,22 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
-    private String status;
-
     @ManyToOne
     @JoinColumn(name = "garden_id")
-    @JsonBackReference
+    @JsonBackReference("garden-orders")
     private Garden garden;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference("user-orders")
     private User user;
 
+    private LocalDateTime date;
+
+    @Column(length = 50)
+    private String status;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("order-items")
     private List<OrderItem> items;
 }

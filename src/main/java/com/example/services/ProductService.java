@@ -14,19 +14,40 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> findAll() {
+    public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Optional<Product> findById(Long id) {
+    public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    public Product save(Product product) {
+    public List<Product> searchByCaName(String name) {
+        return productRepository.findByCaNameContaining(name);
+    }
+
+    public List<Product> searchByEsName(String name) {
+        return productRepository.findByEsNameContaining(name);
+    }
+
+    public List<Product> searchByEnName(String name) {
+        return productRepository.findByEnNameContaining(name);
+    }
+
+    public Product createProduct(Product product) {
         return productRepository.save(product);
     }
 
-    public void delete(Long id) {
+    public Product updateProduct(Long id, Product product) {
+        if (productRepository.existsById(id)) {
+            product.setId(id);
+            return productRepository.save(product);
+        }
+        return null;
+    }
+
+    public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
 }

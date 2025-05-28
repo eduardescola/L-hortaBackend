@@ -17,19 +17,19 @@ public class VolunteerSessionController {
 
     @GetMapping
     public List<VolunteerSession> list() {
-        return sessionService.findAll();
+        return sessionService.getAllSessions();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VolunteerSession> get(@PathVariable Long id) {
-        return sessionService.findById(id)
+        return sessionService.getSession(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public VolunteerSession create(@RequestBody VolunteerSession session) {
-        return sessionService.save(session);
+        return sessionService.createSession(session);
     }
 
     @DeleteMapping("/{id}")
