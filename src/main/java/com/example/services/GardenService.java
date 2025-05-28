@@ -59,6 +59,10 @@ public class GardenService {
         return gardenRepository.findAll(pageable);
     }
 
+    public List<Garden> findByUserId(Long userId) {
+        return gardenRepository.findByUserId(userId);
+    }
+
     public Garden createGarden(
             String name,
             String description,

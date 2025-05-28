@@ -71,7 +71,6 @@ public class GardenController {
         }
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         gardenService.delete(id);
@@ -94,6 +93,14 @@ public class GardenController {
     @GetMapping("/location/{location}")
     public List<Garden> findByLocation(@PathVariable String location) {
         return gardenService.findByLocation(location);
+    }
+    
+    @GetMapping("/my-gardens")
+    public ResponseEntity<List<Garden>> getMyGardens(Authentication authentication) {
+        String userEmail = authentication.getName();
+        return userRepository.findByEmail(userEmail)
+            .map(user -> ResponseEntity.ok(gardenService.findByUserId(user.getId())))
+            .orElse(ResponseEntity.status(404).build());
     }
     
     @GetMapping("/paged")

@@ -19,5 +19,8 @@ public interface GardenRepository extends JpaRepository<Garden, Long> {
 
     // 🔄 Añadir paginación
     Page<Garden> findAll(Pageable pageable);
+    
+    List<Garden> findByUserId(Long userId); // ✅ Este método
+    
 }
 
