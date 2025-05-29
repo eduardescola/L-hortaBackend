@@ -41,10 +41,10 @@ public class GardenController {
     @Autowired
     private GardenMapper gardenMapper;
 
-    @GetMapping
+    /*@GetMapping
     public List<GardenListDTO> list() {
         return gardenService.getAllGardensForList();
-    }
+    }*/
     
     @GetMapping
     public Page<GardenListDTO> listGardensPaginated(
