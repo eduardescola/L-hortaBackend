@@ -186,6 +186,7 @@ public class GardenService {
         dto.setCaName(gardenProduct.getProduct().getCaName());
         dto.setEsName(gardenProduct.getProduct().getEsName());
         dto.setEnName(gardenProduct.getProduct().getEnName());
+        dto.setImage(gardenProduct.getProduct().getImage());
         dto.setStock(gardenProduct.getStock());
         dto.setUnitPrice(gardenProduct.getUnitPrice());
         dto.setUnits(gardenProduct.getUnits());

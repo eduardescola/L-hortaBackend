@@ -29,6 +29,9 @@ public class Product {
     @Column(name="fr_name", length=100, nullable = false)
     private String frName;
 
+    @Column(name="image", columnDefinition="TEXT")
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "garden_id")
 //    @JsonBackReference("garden-products")
