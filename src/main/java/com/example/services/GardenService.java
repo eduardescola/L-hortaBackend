@@ -143,9 +143,7 @@ public class GardenService {
         return gardenRepository.findByName(name);
     }
 
-    public List<Garden> findByProduct(String product) {
-        return gardenRepository.findByProduct(product);
-    }
+  
 
     // Buscar por ubicación del usuario propietario
     public List<Garden> findByLocation(String location) {
@@ -222,19 +220,8 @@ public class GardenService {
 
         return dto;
     }
-    public List<Garden> getGardensWithFilters(String name, String location, String productName) {
-        if (name != null && !name.isEmpty()) {
-        	return gardenRepository.findByNameLike(name);
-
-        } else if (location != null && !location.isEmpty()) {
-            return gardenRepository.findByLocation(location);
-        } else if (productName != null && !productName.isEmpty()) {
-            return gardenRepository.findByProduct(productName);
-        } else {
-            return gardenRepository.findAll();
-        }
+    public List<Garden> getGardensWithFilters(String name, String location, String productName, String lang) {
+        return gardenRepository.filterGardens(name, location, productName, lang);
     }
-
-
 
 }
