@@ -11,6 +11,11 @@ import com.example.entities.Garden;
 
 public interface GardenRepository extends JpaRepository<Garden, Long> {
 
+	 // Filtro por nombre parcial (LIKE)
+    @Query("SELECT g FROM Garden g WHERE LOWER(g.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Garden> findByNameLike(@Param("name") String name);
+
+    // Filtro por ID de usuario
     List<Garden> findByUserId(Long userId);
 
     // Buscar jardines por nombre exacto

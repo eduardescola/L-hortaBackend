@@ -222,6 +222,18 @@ public class GardenService {
 
         return dto;
     }
+    public List<Garden> getGardensWithFilters(String name, String location, String productName) {
+        if (name != null && !name.isEmpty()) {
+        	return gardenRepository.findByNameLike(name);
+
+        } else if (location != null && !location.isEmpty()) {
+            return gardenRepository.findByLocation(location);
+        } else if (productName != null && !productName.isEmpty()) {
+            return gardenRepository.findByProduct(productName);
+        } else {
+            return gardenRepository.findAll();
+        }
+    }
 
 
 

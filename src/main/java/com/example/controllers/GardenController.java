@@ -34,8 +34,25 @@ public class GardenController {
     private GardenMapper gardenMapper;
 
     @GetMapping
-    public List<GardenListDTO> list() {
-        return gardenService.getAllGardensForList();
+    public List<GardenListDTO> list(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String product
+    ) {
+        return gardenService.getGardensWithFilters(name, location, product)
+                .stream()
+                .map(garden -> {
+                    GardenListDTO dto = new GardenListDTO();
+                    dto.setId(garden.getId());
+                    dto.setName(garden.getName());
+                    dto.setDescription(garden.getDescription());
+                    dto.setImage(garden.getImage());
+                    dto.setLocation(garden.getLocation());
+                    dto.setProductAvailable(garden.isProductAvailable());
+                    dto.setSessionAvailable(garden.isSessionAvailable());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
