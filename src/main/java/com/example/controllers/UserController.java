@@ -37,6 +37,16 @@ public class UserController {
         userService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<?> cambiarRolAOwner(@PathVariable Long id) {
+        boolean actualizado = userService.cambiarRolAOwner(id);
+        if (actualizado) {
+            return ResponseEntity.ok("Rol actualizado a OWNER");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     //@PatchMapping("/{id}")
 //    public ResponseEntity<?> updateProfile(@PathVariable Long id, @RequestBody Map<String, Object> updates) {

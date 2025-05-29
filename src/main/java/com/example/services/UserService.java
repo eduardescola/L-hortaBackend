@@ -36,6 +36,17 @@ public class UserService {
     public void eliminar(Long id) {
         userRepository.deleteById(id);
     }
+    
+    public boolean cambiarRolAOwner(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setRole("OWNER");
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
 
     public void updateProfile(){
 

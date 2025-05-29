@@ -1,26 +1,29 @@
 package com.example.services;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.dto.GardenDetailDTO;
-import com.example.dto.GardenProductDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.example.entities.Garden;
-import com.example.repositories.GardenRepository;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import com.example.entities.User;
-import com.example.entities.Product;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.entities.GardenProduct;
-import com.example.repositories.GardenProductRepository;
-import com.example.repositories.ProductRepository;
 import com.example.dto.GardenListDTO;
-import java.util.stream.Collectors;
+import com.example.dto.GardenProductDTO;
+import com.example.entities.Garden;
+import com.example.entities.GardenProduct;
+import com.example.entities.Product;
+import com.example.entities.User;
+import com.example.repositories.GardenProductRepository;
+import com.example.repositories.GardenRepository;
+import com.example.repositories.ProductRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class GardenService {
@@ -39,6 +42,11 @@ public class GardenService {
 
     public List<Garden> getAllGardens() {
         return gardenRepository.findAll();
+    }
+    
+    public Page<GardenListDTO> getAllGardensForListPaginated(Pageable pageable) {
+        return gardenRepository.findAll(pageable)
+                .map(this::convertToDTO); // reutiliza tu método existente
     }
 
     public Optional<Garden> getGardenById(Long id) {

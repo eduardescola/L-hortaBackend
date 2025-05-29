@@ -1,12 +1,13 @@
 package com.example.services;
 
-import com.example.entities.Product;
-import com.example.repositories.ProductRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.entities.Product;
+import com.example.repositories.ProductRepository;
 
 @Service
 public class ProductService {
@@ -45,9 +46,8 @@ public class ProductService {
         }
         return null;
     }
-
+    
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
-
 }

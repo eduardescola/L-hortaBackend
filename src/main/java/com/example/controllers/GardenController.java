@@ -1,24 +1,32 @@
 package com.example.controllers;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.dto.GardenDetailDTO;
 import com.example.dto.GardenListDTO;
 import com.example.dto.GardenProductDTO;
 import com.example.entities.Garden;
 import com.example.entities.User;
-import com.example.services.GardenService;
-import com.example.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import com.example.mappers.GardenMapper;
-
-import java.io.IOException;
-import org.springframework.security.core.Authentication;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.example.repositories.UserRepository;
+import com.example.services.GardenService;
 
 @RestController
 @RequestMapping("/api/gardens")
@@ -36,6 +44,15 @@ public class GardenController {
     @GetMapping
     public List<GardenListDTO> list() {
         return gardenService.getAllGardensForList();
+    }
+    
+    @GetMapping
+    public Page<GardenListDTO> listGardensPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return gardenService.getAllGardensForListPaginated(pageable);
     }
 
     @GetMapping("/{id}")
