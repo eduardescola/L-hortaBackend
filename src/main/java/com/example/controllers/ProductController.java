@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,4 +71,20 @@ public class ProductController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
         return productService.findByGardenIdPaged(gardenId, pageable);
     }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product updatedProduct) {
+        return productService.findById(id)
+                .map(existingProduct -> {
+                    existingProduct.setName(updatedProduct.getName());
+                    existingProduct.setUnitPrice(updatedProduct.getUnitPrice());
+                    existingProduct.setStock(updatedProduct.getStock());
+                    // Si necesitas actualizar el garden también:
+                    existingProduct.setGarden(updatedProduct.getGarden());
+                    Product saved = productService.save(existingProduct);
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }
