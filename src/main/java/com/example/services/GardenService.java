@@ -1,6 +1,8 @@
 package com.example.services;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.example.dto.GardenDetailDTO;
@@ -78,18 +80,31 @@ public class GardenService {
         garden = gardenRepository.save(garden);
 
         // Parse and set products
+        // Parse and add products
         if (productsJson != null && !productsJson.isEmpty()) {
             ObjectMapper mapper = new ObjectMapper();
-            List<GardenProduct> gardenProducts = mapper.readValue(productsJson,
-                    mapper.getTypeFactory().constructCollectionType(List.class, GardenProduct.class));
+            List<Map<String, Object>> productsData = mapper.readValue(productsJson,
+                    mapper.getTypeFactory().constructCollectionType(List.class, Map.class));
 
-            for (GardenProduct gardenProduct : gardenProducts) {
+            for (Map<String, Object> productData : productsData) {
+                Map<String, Object> productMap = (Map<String, Object>) productData.get("product");
+                Long productId = Long.valueOf(productMap.get("id").toString());
+
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new RuntimeException("Product not found: " + productId));
+
+                GardenProduct gardenProduct = new GardenProduct();
                 gardenProduct.setGarden(garden);
+                gardenProduct.setProduct(product);
+                gardenProduct.setUnitPrice(new BigDecimal(productData.get("unitPrice").toString()));
+                gardenProduct.setStock(new BigDecimal(productData.get("stock").toString()));
+                gardenProduct.setUnits(productData.get("units").toString());
+
                 gardenProductRepository.save(gardenProduct);
             }
         }
 
-        return gardenRepository.save(garden);
+        return garden;
     }
 
     public Garden updateGarden(Long id, Garden garden) {
