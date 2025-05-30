@@ -41,19 +41,19 @@ public class GardenController {
     @Autowired
     private GardenMapper gardenMapper;
 
-    /*@GetMapping
+    @GetMapping
     public List<GardenListDTO> list() {
         return gardenService.getAllGardensForList();
-    }*/
-    
-    @GetMapping
-    public Page<GardenListDTO> listGardensPaginated(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return gardenService.getAllGardensForListPaginated(pageable);
     }
+    
+//    @GetMapping
+//    public Page<GardenListDTO> listGardensPaginated(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size
+//    ) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        return gardenService.getAllGardensForListPaginated(pageable);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<GardenDetailDTO> get(@PathVariable Long id) {
@@ -134,20 +134,7 @@ public class GardenController {
             @RequestParam(required = false) String product,
             @RequestParam(defaultValue = "es") String lang // ← este es el que faltaba
     ) {
-        return gardenService.getGardensWithFilters(name, location, product,lang)
-                .stream()
-                .map(garden -> {
-                    GardenListDTO dto = new GardenListDTO();
-                    dto.setId(garden.getId());
-                    dto.setName(garden.getName());
-                    dto.setDescription(garden.getDescription());
-                    dto.setImage(garden.getImage());
-                    dto.setLocation(garden.getLocation());
-                    dto.setProductAvailable(garden.isProductAvailable());
-                    dto.setSessionAvailable(garden.isSessionAvailable());
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return gardenService.getGardensWithFilters(name, location, product, lang);
     }
 
 }
