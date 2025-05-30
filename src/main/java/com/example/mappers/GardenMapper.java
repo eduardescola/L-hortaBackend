@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GardenMapper {
 
-    public GardenListDTO toHomeDTO(Garden garden) {
+    public GardenListDTO toListDTO(Garden garden) {
         if (garden == null) {
             return null;
         }
