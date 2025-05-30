@@ -47,14 +47,14 @@ public class GardenService {
     @Autowired
     private GardenMapper gardenMapper;
 
-    public List<Garden> getAllGardens() {
+    /*public List<Garden> getAllGardens() {
         return gardenRepository.findAll();
-    }
+    }*/
     
-//    public Page<GardenListDTO> getAllGardensForListPaginated(Pageable pageable) {
-//        return gardenRepository.findAll(pageable)
-//                .map(this::convertToDTO); // reutiliza tu método existente
-//    }
+    public Page<GardenListDTO> getAllGardensForListPaginated(Pageable pageable) {
+        return gardenRepository.findAll(pageable)
+                .map(this::convertToDTO); // reutiliza tu método existente
+    }
 
     public Optional<Garden> getGardenById(Long id) {
         return gardenRepository.findById(id);
