@@ -16,7 +16,7 @@ public class GardenProduct {
 
     @ManyToOne
     @JoinColumn(name="garden_id", nullable = false)
-    @JsonBackReference(value = "garden-gardenProducts")
+    @JsonBackReference(value = "garden-products")
     private Garden garden;
 
     @ManyToOne
