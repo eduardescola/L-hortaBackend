@@ -23,6 +23,10 @@ import com.example.entities.User;
 import com.example.repositories.GardenProductRepository;
 import com.example.repositories.GardenRepository;
 import com.example.repositories.ProductRepository;
+import com.example.dto.GardenListDTO;
+import java.util.stream.Collectors;
+import com.example.mappers.GardenMapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -40,14 +44,17 @@ public class GardenService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private GardenMapper gardenMapper;
+
     public List<Garden> getAllGardens() {
         return gardenRepository.findAll();
     }
     
-    public Page<GardenListDTO> getAllGardensForListPaginated(Pageable pageable) {
-        return gardenRepository.findAll(pageable)
-                .map(this::convertToDTO); // reutiliza tu método existente
-    }
+//    public Page<GardenListDTO> getAllGardensForListPaginated(Pageable pageable) {
+//        return gardenRepository.findAll(pageable)
+//                .map(this::convertToDTO); // reutiliza tu método existente
+//    }
 
     public Optional<Garden> getGardenById(Long id) {
         return gardenRepository.findById(id);
@@ -166,9 +173,9 @@ public class GardenService {
         return gardenRepository.findByName(name);
     }
 
-    public List<Garden> findByProduct(String product) {
-        return gardenRepository.findByProduct(product);
-    }
+//    public List<Garden> findByProduct(String product) {
+//        return gardenRepository.findByProduct(product);
+//    }
 
     // Buscar por ubicación del usuario propietario
     public List<Garden> findByLocation(String location) {
@@ -237,6 +244,7 @@ public class GardenService {
         dto.setPostalCode(garden.getPostalCode());
         dto.setProductAvailable(garden.isProductAvailable());
         dto.setSessionAvailable(garden.isSessionAvailable());
+        dto.setUserId(garden.getUser().getId());
 
         // Convert garden products to DTOs
         List<GardenProductDTO> productDTOs = garden.getGardenProducts().stream()
@@ -245,6 +253,13 @@ public class GardenService {
         dto.setGardenProducts(productDTOs);
 
         return dto;
+    }
+
+    public List<GardenListDTO> getGardensWithFilters(String name, String location, String productName, String lang) {
+        return gardenRepository.filterGardens(name, location, productName, lang)
+                .stream()
+                .map(gardenMapper::toListDTO)
+                .collect(Collectors.toList());
     }
 
 

@@ -14,4 +14,5 @@ public class GardenDetailDTO {
     private List<GardenProductDTO> gardenProducts;
     private boolean productAvailable;
     private boolean sessionAvailable;
+    private Long userId;
 }

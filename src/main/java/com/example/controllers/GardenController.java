@@ -41,19 +41,19 @@ public class GardenController {
     @Autowired
     private GardenMapper gardenMapper;
 
-    /*@GetMapping
+    @GetMapping
     public List<GardenListDTO> list() {
         return gardenService.getAllGardensForList();
-    }*/
-    
-    @GetMapping
-    public Page<GardenListDTO> listGardensPaginated(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return gardenService.getAllGardensForListPaginated(pageable);
     }
+    
+//    @GetMapping
+//    public Page<GardenListDTO> listGardensPaginated(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size
+//    ) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        return gardenService.getAllGardensForListPaginated(pageable);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<GardenDetailDTO> get(@PathVariable Long id) {
@@ -103,10 +103,10 @@ public class GardenController {
     }
 
     // 🔍 Buscar jardines por producto
-    @GetMapping("/products/{product}")
-    public List<Garden> findByProduct(@PathVariable String product) {
-        return gardenService.findByProduct(product);
-    }
+//    @GetMapping("/products/{product}")
+//    public List<Garden> findByProduct(@PathVariable String product) {
+//        return gardenService.findByProduct(product);
+//    }
 
     // 🔍 Buscar jardines por ubicación del dueño
     @GetMapping("/location/{location}")
@@ -125,6 +125,16 @@ public class GardenController {
         return userRepository.findByEmail(userEmail)
                 .map(user -> gardenService.getGardensForListByUserId(user.getId()))
                 .orElse(Collections.emptyList());
+    }
+
+    @GetMapping("/filter")
+    public List<GardenListDTO> filterGardens(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String product,
+            @RequestParam(defaultValue = "es") String lang // ← este es el que faltaba
+    ) {
+        return gardenService.getGardensWithFilters(name, location, product, lang);
     }
 
 }
