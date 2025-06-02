@@ -28,4 +28,7 @@ public class OrderService {
     public void delete(Long id) {
         orderRepository.deleteById(id);
     }
+    public List<Order> findByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
 }

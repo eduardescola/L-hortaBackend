@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("🔒 Filtrant ruta: " + request.getRequestURI());
+        //System.out.println("Filtrant ruta: " + request.getRequestURI());
 
 
         String authHeader = request.getHeader("Authorization");
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+        
         String jwt = authHeader.substring(7);
         if (jwtUtil.validateToken(jwt)) {
             String email = jwtUtil.getEmailFromToken(jwt);

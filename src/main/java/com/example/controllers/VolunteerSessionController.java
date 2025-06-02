@@ -20,6 +20,11 @@ public class VolunteerSessionController {
         return sessionService.getAllSessions();
     }
 
+    @GetMapping("/garden/{gardenId}")
+    public List<VolunteerSession> getSessionsByGarden(@PathVariable Long gardenId) {
+        return sessionService.getSessionsByGardenId(gardenId);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VolunteerSession> get(@PathVariable Long id) {
         return sessionService.getSession(id)
@@ -37,4 +42,5 @@ public class VolunteerSessionController {
         sessionService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
 }

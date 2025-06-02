@@ -10,6 +10,7 @@ public class GardenProductDTO {
     private String esName;
     private String enName;
     private String frName;
+    private String image;
     private BigDecimal stock;
     private BigDecimal unitPrice;
     private String units;
