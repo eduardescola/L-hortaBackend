@@ -3,6 +3,7 @@ package com.example.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class Order {
 
     @Column(length = 50)
     private String status;
+
+    @Column(name="total_price", precision=10, scale=2)
+    private BigDecimal totalPrice;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference("order-items")
