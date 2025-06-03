@@ -41,19 +41,19 @@ public class GardenController {
     @Autowired
     private GardenMapper gardenMapper;
 
-    @GetMapping
+    /*@GetMapping
     public List<GardenListDTO> list() {
         return gardenService.getAllGardensForList();
-    }
+    }*/
     
-//    @GetMapping
-//    public Page<GardenListDTO> listGardensPaginated(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size
-//    ) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return gardenService.getAllGardensForListPaginated(pageable);
-//    }
+    @GetMapping
+    public Page<GardenListDTO> listGardensPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+   ) {
+       Pageable pageable = PageRequest.of(page, size);
+        return gardenService.getAllGardensForListPaginated(pageable);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<GardenDetailDTO> get(@PathVariable Long id) {
@@ -136,5 +136,10 @@ public class GardenController {
     ) {
         return gardenService.getGardensWithFilters(name, location, product, lang);
     }
-
+    
+    @DeleteMapping("/{gardenId}/products/{productId}")
+    public ResponseEntity<Void> deleteProductFromGarden(@PathVariable Long gardenId, @PathVariable Long productId) {
+        gardenService.removeProductFromGarden(gardenId, productId);
+        return ResponseEntity.noContent().build();
+    }
 }

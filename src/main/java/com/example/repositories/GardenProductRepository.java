@@ -1,10 +1,10 @@
 package com.example.repositories;
 
-import com.example.entities.GardenProduct;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.entities.GardenProduct;
 
 public interface GardenProductRepository extends JpaRepository<GardenProduct, Long>{
     List<GardenProduct> findByGardenId(Long gardenId);

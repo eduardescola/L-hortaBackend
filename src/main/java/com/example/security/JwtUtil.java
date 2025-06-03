@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.entities.User;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -44,5 +45,15 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    public Long extractUserId(String token) {
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        return claims.get("id", Long.class);
     }
 }

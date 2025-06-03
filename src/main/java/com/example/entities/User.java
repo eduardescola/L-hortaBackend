@@ -41,6 +41,9 @@ public class User {
 
     @Column(length=50)
     private String role;
+    
+    @Column(name = "profile_image", length = 255)
+    private String profileImage; // <-- Ruta o URL de la imagen de perfil
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference("user-gardens")
