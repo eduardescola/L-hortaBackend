@@ -1,10 +1,5 @@
 package com.example.services;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +95,7 @@ public class UserService {
             // Guarda la imagen en una carpeta 'users/' usando FileStorageService
             String imagePath = fileStorageService.storeFile(imageFile, "users/");
             user.setProfileImage(imagePath);  // Asumiendo que User tiene un campo profileImage (String)
-            crear(user); // Guarda la entidad User actualizada
+            userRepository.save(user);
             return imagePath;
         } catch (Exception e) {
             e.printStackTrace();
