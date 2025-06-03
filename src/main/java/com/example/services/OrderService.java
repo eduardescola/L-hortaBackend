@@ -1,19 +1,17 @@
 package com.example.services;
 
 import com.example.dto.OrderDTO;
-import com.example.dto.OrderItemDTO;
-import com.example.dto.ProductDTO;
 import com.example.dto.ShoppingCartDTO;
+import com.example.dto.ShoppingCartItemDTO;
 import com.example.entities.*;
+import com.example.mappers.OrderMapper;
 import com.example.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.entities.GardenProduct;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,115 +32,91 @@ public class OrderService {
     private GardenRepository gardenRepository;
 
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
     private GardenProductRepository gardenProductRepository;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Transactional(readOnly = true)
+    public List<OrderDTO> findByUserId(Long userId) {
+        return orderMapper.toDTOList(orderRepository.findByUserIdOrderByDateDesc(userId));
+    }
+
     @Transactional
-    public OrderDTO createOrderFromCart(Long userId) {
+    public List<OrderDTO> createOrdersFromCart(Long userId) {
         // Get the shopping cart
         ShoppingCartDTO cart = shoppingCartService.getCart(userId);
         if (cart == null || cart.getItems().isEmpty()) {
             throw new RuntimeException("Shopping cart is empty");
         }
 
-        // Get user and garden
+        // Get user
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Get the garden from the first item (assuming all items are from the same garden)
-        Long gardenId = cart.getItems().get(0).getGarden().getId();
-        Garden garden = gardenRepository.findById(gardenId)
-                .orElseThrow(() -> new RuntimeException("Garden not found"));
+        // Group cart items by garden
+        Map<Long, List<ShoppingCartItemDTO>> itemsByGarden = cart.getItems().stream()
+                .collect(Collectors.groupingBy(item -> item.getGarden().getId()));
 
-        // Create the order
-        Order order = new Order();
-        order.setUser(user);
-        order.setGarden(garden);
-        order.setDate(LocalDateTime.now());
-        order.setStatus("PENDING");
-        order = orderRepository.save(order);
+        List<OrderDTO> createdOrders = new ArrayList<>();
 
-        // Create order items from cart items
-        List<OrderItem> orderItems = cart.getItems().stream()
-                .map(cartItem -> {
-                    OrderItem orderItem = new OrderItem();
-                    //orderItem.setOrder(order);
-                    orderItem.setGardenProduct(gardenProductRepository.findById(cartItem.getProduct().getId())
-                            .orElseThrow(() -> new RuntimeException("Product not found")));
-                    //orderItem.setQuantity(cartItem.getQuantity());
-                    orderItem.setUnitPrice(cartItem.getUnitPrice());
-                    return orderItemRepository.save(orderItem);
-                })
-                .collect(Collectors.toList());
+        // Create a separate order for each garden
+        for (Map.Entry<Long, List<ShoppingCartItemDTO>> entry : itemsByGarden.entrySet()) {
+            Long gardenId = entry.getKey();
+            List<ShoppingCartItemDTO> gardenItems = entry.getValue();
 
-        order.setItems(orderItems);
-        order = orderRepository.save(order);
+            // Get garden
+            Garden garden = gardenRepository.findById(gardenId)
+                    .orElseThrow(() -> new RuntimeException("Garden not found: " + gardenId));
 
-        // Clear the shopping cart
-        shoppingCartService.clearCart(userId);
+            // Create and save the order first
+            final Order order = orderRepository.save(new Order() {{
+                setUser(user);
+                setGarden(garden);
+                setDate(LocalDateTime.now());
+                setStatus("PENDING");
+            }});
 
-        return convertToDTO(order);
-    }
+            // Create order items for this garden's items
+            List<OrderItem> orderItems = gardenItems.stream()
+                    .map(cartItem -> {
+                        // Get the garden product
+                        GardenProduct gardenProduct = gardenProductRepository.findById(cartItem.getGardenProductId())
+                                .orElseThrow(() -> new RuntimeException("Garden product not found: " + cartItem.getGardenProductId()));
 
-    private OrderDTO convertToDTO(Order order) {
-        OrderDTO dto = new OrderDTO();
-        dto.setId(order.getId());
-        dto.setUserId(order.getUser().getId());
-        dto.setGardenId(order.getGarden().getId());
-        dto.setDate(order.getDate());
-        dto.setStatus(order.getStatus());
+                        // Verify the garden product belongs to the correct garden
+                        if (!gardenProduct.getGarden().getId().equals(gardenId)) {
+                            throw new RuntimeException("Garden product does not belong to the correct garden");
+                        }
 
-        dto.setItems(order.getItems().stream()
-                .map(this::convertToItemDTO)
-                .collect(Collectors.toList()));
+                        OrderItem orderItem = new OrderItem();
+                        orderItem.setOrder(order);
+                        //orderItem.setProduct(gardenProduct.getProduct());
+                        orderItem.setGardenProduct(gardenProduct);
+                        orderItem.setQuantity(cartItem.getQuantity());
+                        orderItem.setUnitPrice(gardenProduct.getUnitPrice());
+                        return orderItemRepository.save(orderItem);
+                    })
+                    .toList();
 
-        return dto;
-    }
-
-    private ProductDTO toProductDTO(com.example.entities.Product product) {
-        if (product == null) {
-            return null;
+            order.setItems(orderItems);
+            Order savedOrder = orderRepository.save(order);
+            createdOrders.add(orderMapper.toDTO(savedOrder));
         }
 
-        ProductDTO dto = new ProductDTO();
-        dto.setId(product.getId());
-        dto.setCaName(product.getCaName());
-        dto.setEsName(product.getEsName());
-        dto.setEnName(product.getEnName());
-        dto.setFrName(product.getFrName());
-        dto.setImage(product.getImage());
+        // Clear the shopping cart after all orders are created
+        shoppingCartService.clearCart(userId);
 
-        return dto;
-    }
-
-    private OrderItemDTO convertToItemDTO(OrderItem item) {
-        OrderItemDTO dto = new OrderItemDTO();
-        dto.setId(item.getId());
-
-        GardenProduct gardenProduct = item.getGardenProduct();
-        dto.setProduct(toProductDTO(gardenProduct.getProduct()));
-        dto.setQuantity(item.getQuantity());
-        dto.setUnitPrice(item.getUnitPrice());
-        return dto;
+        return createdOrders;
     }
 
     public List<OrderDTO> findAll() {
-        return orderRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<OrderDTO> findByUserId(Long userId) {
-        List<Order> orders = orderRepository.findByUserId(userId);
-        return orders.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return orderMapper.toDTOList(orderRepository.findAll());
     }
 
     public Optional<OrderDTO> findById(Long id) {
         return orderRepository.findById(id)
-                .map(this::convertToDTO);
+                .map(orderMapper::toDTO);
     }
 
     public void delete(Long id) {

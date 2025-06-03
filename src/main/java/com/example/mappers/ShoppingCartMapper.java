@@ -7,12 +7,16 @@ import com.example.entities.ShoppingCart;
 import com.example.entities.ShoppingCartItem;
 import com.example.entities.GardenProduct;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.example.dto.GardenDTO;
 
 import java.util.stream.Collectors;
 
 @Component
 public class ShoppingCartMapper {
+
+    @Autowired
+    private ProductMapper productMapper;
 
     public ShoppingCartDTO toDTO(ShoppingCart cart) {
         if (cart == null) {
@@ -48,7 +52,7 @@ public class ShoppingCartMapper {
         dto.setUnitPrice(gardenProduct.getUnitPrice());
         dto.setUnits(gardenProduct.getUnits());
 
-        dto.setProduct(toProductDTO(gardenProduct.getProduct()));
+        dto.setProduct(productMapper.toDTO(gardenProduct.getProduct()));
         dto.setGarden(toGardenDTO(gardenProduct.getGarden()));
 
         return dto;

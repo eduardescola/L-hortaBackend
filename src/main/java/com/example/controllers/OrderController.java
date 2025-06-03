@@ -22,22 +22,27 @@ public class OrderController {
     private UserRepository userRepository;
 
     @PostMapping("/create-from-cart")
-    public ResponseEntity<OrderDTO> createFromCart(Authentication authentication) {
+    public ResponseEntity<List<OrderDTO>> createFromCart(Authentication authentication) {
         try {
             Long userId = Long.parseLong(authentication.getName());
-            OrderDTO order = orderService.createOrderFromCart(userId);
-            return ResponseEntity.ok(order);
+            List<OrderDTO> orders = orderService.createOrdersFromCart(userId);
+            return ResponseEntity.ok(orders);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping
-    public List<OrderDTO> list(Authentication authentication) {
-        String userEmail = authentication.getName();
-        return userRepository.findByEmail(userEmail)
-                .map(user -> orderService.findByUserId(user.getId()))
-                .orElse(Collections.emptyList());
+    public ResponseEntity<List<OrderDTO>> list(Authentication authentication) {
+        try {
+            String userEmail = authentication.getName();
+            List<OrderDTO> orders = userRepository.findByEmail(userEmail)
+                    .map(user -> orderService.findByUserId(user.getId()))
+                    .orElse(Collections.emptyList());
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{id}")
