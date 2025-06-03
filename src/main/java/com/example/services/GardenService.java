@@ -20,13 +20,10 @@ import com.example.entities.Garden;
 import com.example.entities.GardenProduct;
 import com.example.entities.Product;
 import com.example.entities.User;
+import com.example.mappers.GardenMapper;
 import com.example.repositories.GardenProductRepository;
 import com.example.repositories.GardenRepository;
 import com.example.repositories.ProductRepository;
-import com.example.dto.GardenListDTO;
-import java.util.stream.Collectors;
-import com.example.mappers.GardenMapper;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service

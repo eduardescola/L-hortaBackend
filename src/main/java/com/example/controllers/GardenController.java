@@ -27,6 +27,7 @@ import com.example.entities.User;
 import com.example.mappers.GardenMapper;
 import com.example.repositories.UserRepository;
 import com.example.services.GardenService;
+import com.example.services.UserService;
 
 @RestController
 @RequestMapping("/api/gardens")
@@ -34,6 +35,9 @@ public class GardenController {
 
     @Autowired
     private GardenService gardenService;
+    
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
@@ -77,6 +81,11 @@ public class GardenController {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             System.out.println(user.getId());
+            
+            // Verifica y asigna rol OWNER si es necesario
+            if (!"OWNER".equals(user.getRole())) {
+                userService.cambiarRolAOwner(user.getId());
+            }
 
             Garden garden = gardenService.createGarden(
                     name, description, location, postalCode, user.getId(), productsJson,
