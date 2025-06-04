@@ -33,7 +33,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> obtenerPorId(Long id) {
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
@@ -84,7 +84,7 @@ public class UserService {
     }
 
     public String saveProfileImage(Long userId, MultipartFile imageFile) {
-        Optional<User> userOpt = obtenerPorId(userId);
+        Optional<User> userOpt = getUserById(userId);
         if (userOpt.isEmpty()) {
             return null;
         }

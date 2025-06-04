@@ -92,7 +92,8 @@ public class ShoppingCartService {
     @Transactional
     public void clearCart(Long userId) {
         ShoppingCart cart = getOrCreateCart(userId);
-        cartItemRepository.deleteByCartId(cart.getId());
+        System.out.println("Clearing cart items for cart ID: " + cart.getId());
+        cartItemRepository.deleteAllByCartId(cart.getId());
     }
 
     @Transactional(readOnly = true)

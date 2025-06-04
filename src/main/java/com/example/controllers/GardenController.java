@@ -41,19 +41,19 @@ public class GardenController {
     @Autowired
     private GardenMapper gardenMapper;
 
-    /*@GetMapping
+    @GetMapping
     public List<GardenListDTO> list() {
         return gardenService.getAllGardensForList();
-    }*/
+    }
     
-    @GetMapping
+   /* @GetMapping
     public Page<GardenListDTO> listGardensPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
    ) {
        Pageable pageable = PageRequest.of(page, size);
         return gardenService.getAllGardensForListPaginated(pageable);
-    }
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<GardenDetailDTO> get(@PathVariable Long id) {

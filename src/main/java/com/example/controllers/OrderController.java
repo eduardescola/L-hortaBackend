@@ -22,11 +22,19 @@ public class OrderController {
     private UserRepository userRepository;
 
     @PostMapping("/create-from-cart")
-    public ResponseEntity<List<OrderDTO>> createFromCart(Authentication authentication) {
+    public ResponseEntity<?> createFromCart(Authentication authentication) {
         try {
-            Long userId = Long.parseLong(authentication.getName());
-            List<OrderDTO> orders = orderService.createOrdersFromCart(userId);
-            return ResponseEntity.ok(orders);
+            String userEmail = authentication.getName();
+            return userRepository.findByEmail(userEmail)
+                    .map(user -> {
+                        try {
+                            List<OrderDTO> orders = orderService.createOrdersFromCart(user.getId());
+                            return ResponseEntity.ok(orders);
+                        } catch (RuntimeException e) {
+                            return ResponseEntity.badRequest().body(e.getMessage());
+                        }
+                    })
+                    .orElse(ResponseEntity.notFound().build());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -48,9 +56,11 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> get(@PathVariable Long id, Authentication authentication) {
         try {
-            Long userId = Long.parseLong(authentication.getName());
-            return orderService.findById(id)
-                    .map(ResponseEntity::ok)
+            String userEmail = authentication.getName();
+            return userRepository.findByEmail(userEmail)
+                    .map(user -> orderService.findById(id)
+                            .map(ResponseEntity::ok)
+                            .orElse(ResponseEntity.notFound().build()))
                     .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -60,9 +70,13 @@ public class OrderController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
         try {
-            Long userId = Long.parseLong(authentication.getName());
-            orderService.delete(id);
-            return ResponseEntity.noContent().build();
+            String userEmail = authentication.getName();
+            return userRepository.findByEmail(userEmail)
+                    .map(user -> {
+                        orderService.delete(id);
+                        return ResponseEntity.noContent().<Void>build();
+                    })
+                    .orElse(ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
