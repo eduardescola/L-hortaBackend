@@ -58,4 +58,16 @@ public class Garden {
     public boolean isSessionAvailable() {
         return sessions != null && !sessions.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "Garden{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", location='" + location + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                '}';
+    }
 }

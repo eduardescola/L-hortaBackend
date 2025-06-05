@@ -33,4 +33,14 @@ public class GardenProduct {
 
     @Column(length = 25)
     private String units;
+
+    @Override
+    public String toString() {
+        return "GardenProduct{" +
+                "id=" + id +
+                ", unitPrice=" + unitPrice +
+                ", stock=" + stock +
+                ", units='" + units + '\'' +
+                '}';
+    }
 }

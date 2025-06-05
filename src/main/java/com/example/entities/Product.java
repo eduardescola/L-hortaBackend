@@ -43,4 +43,16 @@ public class Product {
     @JsonIgnore
     private List<GardenProduct> gardenProduct;
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", caName='" + caName + '\'' +
+                ", esName='" + esName + '\'' +
+                ", enName='" + enName + '\'' +
+                ", frName='" + frName + '\'' +
+                ", image='" + image + '\'' +
+                '}';
+    }
+
 }

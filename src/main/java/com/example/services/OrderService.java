@@ -83,7 +83,7 @@ public class OrderService {
                 order.setGarden(garden);
                 order.setDate(LocalDateTime.now());
                 order.setStatus("PENDING");
-                
+
                 // Create order items for this garden's items
                 List<OrderItem> orderItems = gardenItems.stream()
                         .map(cartItem -> {

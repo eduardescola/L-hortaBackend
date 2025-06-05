@@ -8,6 +8,7 @@ import com.example.entities.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,10 @@ public class OrderMapper {
         dto.setId(order.getId());
         dto.setUserId(order.getUser().getId());
         dto.setGardenId(order.getGarden().getId());
+        dto.setGardenName(order.getGarden().getName());
         dto.setDate(order.getDate());
         dto.setStatus(order.getStatus());
+        dto.setTotalPrice(order.getTotalPrice());
         dto.setItems(toItemDTOList(order.getItems()));
 
         return dto;
@@ -51,12 +54,12 @@ public class OrderMapper {
 
         OrderItemDTO dto = new OrderItemDTO();
         dto.setId(item.getId());
-
-        productMapper.toDTO(item.getGardenProduct().getProduct());
-
+        dto.setGardenProductId(item.getGardenProduct().getId());
+        dto.setProduct(productMapper.toDTO(item.getGardenProduct().getProduct()));
         dto.setQuantity(item.getQuantity());
         dto.setUnitPrice(item.getUnitPrice());
         dto.setUnits(item.getGardenProduct().getUnits());
+        dto.setTotalPrice(item.getTotalPrice());
 
         return dto;
     }

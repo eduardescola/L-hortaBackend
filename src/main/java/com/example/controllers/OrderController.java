@@ -36,7 +36,7 @@ public class OrderController {
                     })
                     .orElse(ResponseEntity.notFound().build());
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

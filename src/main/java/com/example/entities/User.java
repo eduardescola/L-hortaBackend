@@ -48,4 +48,17 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference("user-gardens")
     private List<Garden> gardens;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", location='" + location + '\'' +
+                ", role='" + role + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                '}';
+    }
 }
