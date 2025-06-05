@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -141,5 +138,13 @@ public class GardenController {
     public ResponseEntity<Void> deleteProductFromGarden(@PathVariable Long gardenId, @PathVariable Long productId) {
         gardenService.removeProductFromGarden(gardenId, productId);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/others")
+    public List<GardenListDTO> getGardensNotMine(Authentication authentication) {
+        String userEmail = authentication.getName();
+        return userRepository.findByEmail(userEmail)
+                .map(user -> gardenService.getGardensNotOwnedByUser(user.getId()))
+                .orElse(Collections.emptyList());
     }
 }

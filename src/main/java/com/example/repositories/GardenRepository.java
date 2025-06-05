@@ -2,8 +2,6 @@ package com.example.repositories;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +17,8 @@ public interface GardenRepository extends JpaRepository<Garden, Long> {
 
     // Buscar jardines por ubicación del usuario propietario
     List<Garden> findByLocation(String location);
+    
+    List<Garden> findByUserIdNot(Long userId);
 
     @Query("""
     	    SELECT DISTINCT g FROM Garden g
